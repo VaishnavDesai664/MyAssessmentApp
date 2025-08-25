@@ -20,7 +20,6 @@ import CounterScreen from './ScreensNew/CounterScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// ✅ Login Screen
 function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
