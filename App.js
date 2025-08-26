@@ -49,7 +49,7 @@ function LoginScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Password"
-        placeholderTextColor="#666"
+        placeholderTextColor="#666"    
         value={password}
         onChangeText={setPassword}
       />
