@@ -1,17 +1,11 @@
 // App.js
-import React, { useState } from 'react';
-import {
-  Button,
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Alert,
-} from 'react-native';
+import React from 'react';
+import { StatusBar } from 'react-native'; // ✅ Import StatusBar
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import LoginScreen from './ScreensNew/LoginScreen';
 import SettingsScreen from './ScreensNew/CounterScreen';
 import DetailsScreen from './ScreensNew/DetailsScreen';
 import PostsScreen from './ScreensNew/PostsScreen';
@@ -20,66 +14,15 @@ import CounterScreen from './ScreensNew/CounterScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleLogin = () => {
-    if (email && password) {
-      Alert.alert("Login Info", `Email: ${email}\nPassword: ${password}`);
-      navigation.replace('MainApp'); // replace so user can't go back
-    } else {
-      alert('Please enter Email & Password');
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Login Screen</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#666"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#666"    
-        value={password}
-        onChangeText={setPassword}
-      />
-
-      <View style={{ marginTop: 10, width: '100%' }}>
-        <Button title="Login" onPress={handleLogin} />
-      </View>
-    </View>
-  );
-}
-
-// ✅ Home Stack
+// ✅ Home Stack (Posts + Details)
 function HomeStack() {
   return (
     <Stack.Navigator
       initialRouteName="PostsScreen"
-      screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Posts Screen" component={PostsScreen} />
+      screenOptions={{ headerShown: false }}
+    >
+      <Stack.Screen name="PostsScreen" component={PostsScreen} />
       <Stack.Screen name="Details" component={DetailsScreen} />
-    </Stack.Navigator>
-  );
-}
-
-// ✅ Settings Stack
-function SettingsStack() {
-  return (
-    <Stack.Navigator
-      initialRouteName="Settings"
-      screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );
 }
@@ -88,23 +31,24 @@ function SettingsStack() {
 function MainApp() {
   return (
     <Tab.Navigator
-      initialRouteName="HomeStack"
+      initialRouteName="Home" // must match Tab.Screen name
       screenOptions={{
         headerStyle: { backgroundColor: '#f2f2f2' },
         headerTintColor: '#000',
         headerTitleStyle: { fontWeight: 'bold' },
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
-      }}>
+      }}
+    >
       <Tab.Screen
-        name="PostsScreen"
+        name="Home"
         component={HomeStack}
-        options={{ tabBarLabel: 'Posts Screen', title: 'Posts Screen' }}
+        options={{ tabBarLabel: 'Posts', title: 'Posts' }}
       />
       <Tab.Screen
-        name="CounterScreen"
+        name="Counter"
         component={CounterScreen}
-        options={{ tabBarLabel: 'Counter Screen', title: 'Counter Screen' }}
+        options={{ tabBarLabel: 'Counter', title: 'Counter' }}
       />
     </Tab.Navigator>
   );
@@ -113,27 +57,19 @@ function MainApp() {
 // ✅ Root Stack (Login + MainApp)
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="MainApp" component={MainApp} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      {/* ✅ Status Bar */}
+      <StatusBar
+        backgroundColor="#f2f2f2" // same as header background
+        barStyle="dark-content" // dark text/icons
+        translucent={false} // set true if you want content under status bar
+      />
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="MainApp" component={MainApp} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
-}
-
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 },
-  header: { fontSize: 24, marginBottom: 20 },
-  input: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-});
+}  

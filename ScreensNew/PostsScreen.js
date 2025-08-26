@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import styles from "./styles";
 
 const PostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
@@ -42,36 +43,3 @@ const PostsScreen = ({ navigation }) => {
 
 export default PostsScreen;
 
-const styles = StyleSheet.create({
-  flexContainer: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  postCard: {
-    backgroundColor: "#f8f8f8",
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 8,
-  },
-  postTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  postBody: {
-    fontSize: 14,
-    color: "#555",
-  },
-  footerBar: {
-    padding: 15,
-    backgroundColor: "#eee",
-    alignItems: "center",
-    marginTop: 10,
-    borderRadius: 6,
-  },
-  footerText: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "600",
-  },
-});

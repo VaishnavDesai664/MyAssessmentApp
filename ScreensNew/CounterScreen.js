@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
+import styles from "./styles";
 
 const CounterScreen = () => {
   const [count, setCount] = useState(0);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.counterText}>Counter {count}</Text>
-      <View style={styles.buttonRow}>
+    <View style={styles.containerCounter}>
+      <Text style={styles.counterTextCounter}>Counter {count}</Text>
+      <View style={styles.buttonRowCounter}>
         <Button title="+" onPress={() => setCount(count + 1)} />
         <Button
           title="-"
@@ -24,21 +25,3 @@ const CounterScreen = () => {
 
 export default CounterScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-    backgroundColor: "#fff",
-  },
-  counterText: {
-    fontSize: 40,
-    textAlign: "center",
-    marginBottom: 20,
-    fontWeight: "bold",
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
-});
