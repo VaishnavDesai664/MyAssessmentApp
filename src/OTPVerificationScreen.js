@@ -22,9 +22,8 @@ export default function OTPVerificationScreen({ route, navigation }) {
   const [resendLoading, setResendLoading] = useState(false);
   const [error, setError] = useState('');
   const [timeLeft, setTimeLeft] = useState(30);
-  const [attempts, setAttempts] = useState(0);
 
-  // Timer
+  // TIMER
   useEffect(() => {
     if (timeLeft <= 0) return;
     const t = setInterval(() => {
@@ -56,11 +55,7 @@ export default function OTPVerificationScreen({ route, navigation }) {
   };
 
   const handleKeyPress = ({ nativeEvent }, index) => {
-    if (
-      nativeEvent.key === 'Backspace' &&
-      otpArray[index] === '' &&
-      index > 0
-    ) {
+    if (nativeEvent.key === 'Backspace' && otpArray[index] === '' && index > 0) {
       inputsRef.current[index - 1]?.focus();
       const newOtp = [...otpArray];
       newOtp[index - 1] = '';
@@ -68,77 +63,46 @@ export default function OTPVerificationScreen({ route, navigation }) {
     }
   };
 
-  const verifyOtp = async () => {
+  // 🔥 VERIFY WITHOUT API
+  const verifyOtp = () => {
     const code = otpValue();
+
     if (code.length !== otpLength) {
       setError('Please enter the complete OTP.');
       return;
     }
+
     setError('');
     setLoading(true);
 
-    try {
-      const res = await fetch('https://example.com/api/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, otp: code }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        Alert.alert('Success', 'OTP verified successfully');
-        // navigation.replace('Home');
-      } else {
-        setError(data?.message ?? 'OTP verification failed');
-        setAttempts(a => a + 1);
-      }
-    } catch (err) {
-      setError('Network error. Try again.');
-    } finally {
+    setTimeout(() => {
       setLoading(false);
-    }
+      Alert.alert('Success', `OTP Verified: ${code}`);
+      // navigation.replace("Home")
+    }, 1000);
   };
 
-  const resendOtp = async () => {
+  // 🔥 RESEND WITHOUT API
+  const resendOtp = () => {
     if (timeLeft > 0) return;
+
     setResendLoading(true);
     setError('');
 
-    try {
-      const res = await fetch('https://example.com/api/resend-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setTimeLeft(30);
-        setOtpArray(Array(otpLength).fill(''));
-        inputsRef.current[0]?.focus();
-        Alert.alert('OTP Sent', `OTP resent to ${phone}`);
-      } else {
-        setError(data?.message ?? 'Failed to resend OTP');
-      }
-    } catch (err) {
-      setError('Network error. Try again.');
-    } finally {
+    setTimeout(() => {
       setResendLoading(false);
-    }
+      setTimeLeft(30);
+      setOtpArray(Array(otpLength).fill(''));
+      inputsRef.current[0]?.focus();
+      Alert.alert('OTP Sent', `A new OTP is sent to ${phone}`);
+    }, 800);
   };
 
   return (
     <View style={styles.container}>
-
-      <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backBtn}
-            >
-              <Text style={styles.backIcon}>‹</Text>
-            </TouchableOpacity>
-
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+        <Text style={styles.backIcon}>‹</Text>
+      </TouchableOpacity>
 
       <Text style={styles.title}>OTP Verification</Text>
 
@@ -177,38 +141,24 @@ export default function OTPVerificationScreen({ route, navigation }) {
         onPress={verifyOtp}
         disabled={loading}
       >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.verifyButtonText}>Verify</Text>
-        )}
+        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.verifyButtonText}>Verify</Text>}
       </TouchableOpacity>
 
       <View style={styles.resendRow}>
         <Text style={styles.resendText}>
-          {timeLeft > 0
-            ? `Resend available in ${timeLeft}s`
-            : "Didn't receive the code?"}
+          {timeLeft > 0 ? `Resend available in ${timeLeft}s` : "Didn't receive the code?"}
         </Text>
 
-        <TouchableOpacity
-          onPress={resendOtp}
-          disabled={timeLeft > 0 || resendLoading}
-        >
-          {resendLoading ? (
-            <ActivityIndicator />
-          ) : (
-            <Text style={styles.resendButtonText}>Resend</Text>
-          )}
+        <TouchableOpacity onPress={resendOtp} disabled={timeLeft > 0 || resendLoading}>
+          {resendLoading ? <ActivityIndicator /> : <Text style={styles.resendButtonText}>Resend</Text>}
         </TouchableOpacity>
       </View>
-
     </View>
   );
 }
 
 // ----------------------------------
-//          STYLES
+//               STYLES
 // ----------------------------------
 
 const styles = StyleSheet.create({
@@ -216,9 +166,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 24,
-  //  paddingTop: 40,
-     paddingTop: 120, 
-    
+    paddingTop: 120,
   },
 
   title: {
@@ -311,17 +259,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 8,
   },
+
   backBtn: {
     position: 'absolute',
     top: 30,
     left: 20,
-    zIndex: 10,
     backgroundColor: '#F7F7F9',
     height: 50,
     width: 50,
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 10,
   },
 
   backIcon: {
@@ -330,5 +279,4 @@ const styles = StyleSheet.create({
     color: '#000',
     marginTop: -4,
   },
-
 });
