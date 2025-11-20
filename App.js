@@ -26,6 +26,7 @@ import FavoritePlaces from './src/FavoritePlaces';
 import PopularPackage from './src/PopularPackage';
 import PopularPlacesOne from './src/PopularPlacesOne';
 import i18n, { loadLanguage } from './src/i18n'; 
+import OTPVerificationScreen from './src/OTPVerificationScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -206,7 +207,10 @@ export default function App() {
 
           <Stack.Screen name="PopularPackage" component={PopularPackage} />
 
-          <Stack.Screen name="PopularPlacesOne" component={PopularPlacesOne} />
+<Stack.Screen name="PopularPlacesOne" component={PopularPlacesOne} />
+          <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
+
+          
         </Stack.Navigator>
       </NavigationContainer>
     </>

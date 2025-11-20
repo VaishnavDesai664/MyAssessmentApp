@@ -93,10 +93,16 @@ export default function ForgotPassword({ navigation }) {
           }}
           style={styles.modalBackground}
         >
-          <View style={styles.modalContainer}>
+          <TouchableOpacity
+              onPress={() => {
+                //ssetModalVisible(false);
+                navigation.navigate('OTPVerificationScreen');
+              }}
+              style={styles.modalContainer}>
             <TouchableOpacity
               onPress={() => {
-                setModalVisible(false);
+                //ssetModalVisible(false);
+               // navigation.navigate('OTPVerificationScreen');
               }}
               style={styles.loginButtonContainer}
             >
@@ -111,7 +117,7 @@ export default function ForgotPassword({ navigation }) {
             <Text style={styles.modalMsg}>
               We have sent password recovery instructions to your email.
             </Text>
-          </View>
+          </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
     </View>
