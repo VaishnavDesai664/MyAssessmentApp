@@ -1,20 +1,36 @@
 // App.js
-import React from 'react';
-import { StatusBar } from 'react-native'; // ✅ Import StatusBar
+import React, { useEffect, useState } from 'react';
+import { Image, TouchableOpacity, View, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import LoginScreen from './ScreensNew/LoginScreen';
-import SettingsScreen from './ScreensNew/CounterScreen';
-import DetailsScreen from './ScreensNew/DetailsScreen';
-import PostsScreen from './ScreensNew/PostsScreen';
-import CounterScreen from './ScreensNew/CounterScreen';
+// Old Screens
+import PostsScreen from './src/PostsScreen';
+import CounterScreen from './src/CounterScreen';
+import IconScreen from './src/IconScreen';
+
+// New Screens
+import SplashScreen from './src/SplashScreen';
+import IntroSliderScreen from './src/IntroSliderScreen';
+import LoginScreen from './src/LoginScreen';
+import RegisterScreen from './src/RegisterScreen';
+import ForgotPassword from './src/ForgotPassword';
+import ProfileScreen from './src/ProfileScreen';
+import EditProfile from './src/EditProfile';
+import SearchScreen from './src/SearchScreen';
+import ChatScreenMain from './src/ChatScreenMain';
+import DetailScreen from './src/DetailScreen';
+import NotificationScreen from './src/NotificationScreen';
+import FavoritePlaces from './src/FavoritePlaces';
+import PopularPackage from './src/PopularPackage';
+import PopularPlacesOne from './src/PopularPlacesOne';
+import i18n, { loadLanguage } from './src/i18n'; 
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// ✅ Home Stack (Posts + Details)
+// 🏠 Home Stack
 function HomeStack() {
   return (
     <Stack.Navigator
@@ -22,54 +38,177 @@ function HomeStack() {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="PostsScreen" component={PostsScreen} />
-      <Stack.Screen name="Details" component={DetailsScreen} />
+      <Stack.Screen name="DetailScreen" component={DetailScreen} />
     </Stack.Navigator>
   );
 }
 
-// ✅ Bottom Tabs (Main App)
+// Custom Center Button
+const CustomTabButton = ({ children, onPress }) => (
+  <TouchableOpacity
+    onPress={onPress}
+    activeOpacity={0.8}
+    style={{
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <View
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      {children}
+    </View>
+  </TouchableOpacity>
+);
+
+// MAIN BOTTOM TABS
 function MainApp() {
   return (
     <Tab.Navigator
-      initialRouteName="Home" // must match Tab.Screen name
+      initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor: '#f2f2f2' },
-        headerTintColor: '#000',
-        headerTitleStyle: { fontWeight: 'bold' },
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          height: 65,
+          position: 'absolute',
+          left: 10,
+          right: 10,
+          elevation: 5,
+          backgroundColor: '#fff',
+        },
       }}
     >
       <Tab.Screen
         name="Home"
         component={HomeStack}
-        options={{ tabBarLabel: 'Posts', title: 'Posts' }}
+        options={{
+          tabBarIcon: () => (
+            <Image
+              source={require('./Image/HomeIcon.png')}
+              style={{ width: 25, height: 25, marginTop: 10 }}
+            />
+          ),
+        }}
       />
+
       <Tab.Screen
         name="Counter"
         component={CounterScreen}
-        options={{ tabBarLabel: 'Counter', title: 'Counter' }}
+        options={{
+          tabBarIcon: () => (
+            <Image
+              source={require('./Image/Calendar.png')}
+              style={{ width: 25, height: 25, marginTop: 10 }}
+            />
+          ),
+        }}
+      />
+
+      {/* Center Button */}
+      <Tab.Screen
+        name="Icon"
+        component={IconScreen}
+        options={{
+          tabBarButton: props => (
+            <CustomTabButton {...props}>
+              <Image
+                source={require('./Image/Searchicon.png')}
+                style={{ width: 60, height: 60, borderRadius: 30, top: 5 }}
+              />
+            </CustomTabButton>
+          ),
+        }}
+      />
+
+      {/* Search / Chat List */}
+      <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          tabBarIcon: () => (
+            <Image
+              source={require('./Image/Caht.png')}
+              style={{ width: 25, height: 25, marginTop: 10 }}
+            />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: () => (
+            <Image
+              source={require('./Image/profileimages.jpg')}
+              style={{
+                width: 25,
+                height: 25,
+                borderRadius: 12.5,
+                marginTop: 10,
+              }}
+            />
+          ),
+        }}
       />
     </Tab.Navigator>
   );
 }
 
-// ✅ Root Stack (Login + MainApp)
+// ROOT STACK (MAIN APP FLOW)
 export default function App() {
+
+  const [languageLoaded, setLanguageLoaded] = useState(false);
+
+  // Load stored language on app start
+  useEffect(() => {
+    const initLanguage = async () => {
+      await loadLanguage(); // loads saved language from AsyncStorage
+      setLanguageLoaded(true); // trigger render after language is loaded
+    };
+    initLanguage();
+  }, []);
+
+  if (!languageLoaded) return null; // show nothing until language is loaded
+
+
   return (
     <>
-      {/* ✅ Status Bar */}
       <StatusBar
-        backgroundColor="#f2f2f2" // same as header background
-        barStyle="dark-content" // dark text/icons
-        translucent={false} // set true if you want content under status bar
+        backgroundColor="#f2f2f2"
+        barStyle="dark-content"
+        translucent={false}
       />
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Splash" component={SplashScreen} />
+          <Stack.Screen name="IntroSlider" component={IntroSliderScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="MainApp" component={MainApp} />
+          <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="EditProfile" component={EditProfile} />
+
+          {/* 👉 NOW CHAT SCREEN IS INSIDE NAVIGATION */}
+          <Stack.Screen name="ChatScreenMain" component={ChatScreenMain} />
+          <Stack.Screen name="DetailScreen" component={DetailScreen} />
+
+          <Stack.Screen
+            name="NotificationScreen"
+            component={NotificationScreen}
+          />
+
+          <Stack.Screen name="FavoritePlaces" component={FavoritePlaces} />
+
+          <Stack.Screen name="PopularPackage" component={PopularPackage} />
+
+          <Stack.Screen name="PopularPlacesOne" component={PopularPlacesOne} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
   );
-}  
+}
